@@ -15,7 +15,8 @@ package com.zaizai1.balltracking;
         import android.view.MenuItem;
         import android.view.SurfaceView;
         import android.view.WindowManager;
-
+        import android.widget.RadioButton;
+        import android.widget.RadioGroup;
 
 public class MainActivity extends Activity implements CvCameraViewListener2 {
     private static final String TAG = "OCVSample::Activity";
@@ -23,6 +24,18 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     private CameraBridgeViewBase mOpenCvCameraView;
     private boolean              mIsJavaCamera = true;
     private MenuItem             mItemSwitchCamera = null;
+
+
+    private RadioGroup radioGroup;
+    private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
+
+    private boolean isSelected = false;
+
+    private static final int TOUCH_DONOTHING=0;
+    private static final int TOUCH_LEFT=1;
+    private static final int TOUCH_RIGHT=2;
+    private static final int TOUCH_BALL=3;
+    private int touchMode=TOUCH_DONOTHING;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -59,6 +72,40 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+
+        radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
+        radioButtonDoNothing=(RadioButton)findViewById(R.id.radioButtonDoNothing);
+        radioButtonLeft=(RadioButton)findViewById(R.id.radioButtonLeft);
+        radioButtonRight=(RadioButton)findViewById(R.id.radioButtonRight);
+        radioButtonBall=(RadioButton)findViewById(R.id.radioButtonBall);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(checkedId==radioButtonDoNothing.getId()) {
+                    touchMode=TOUCH_DONOTHING;
+                }
+
+                else if(checkedId==radioButtonLeft.getId()){
+                    touchMode=TOUCH_LEFT;
+                }
+                else if(checkedId==radioButtonRight.getId()){
+                    touchMode=TOUCH_RIGHT;
+                }
+                else if(checkedId==radioButtonBall.getId()){
+                    touchMode=TOUCH_BALL;
+                }
+                else
+                {
+                    Log.e("BallTracking","不存在该checkedId,在radioGroup.setOnCheckedChangeListener()");
+                }
+            }
+        });
+
+
+
+
     }
 
     @Override
@@ -89,12 +136,15 @@ public class MainActivity extends Activity implements CvCameraViewListener2 {
     }
 
     public void onCameraViewStarted(int width, int height) {
+
     }
 
     public void onCameraViewStopped() {
+
     }
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+
         return inputFrame.rgba();
     }
 }
