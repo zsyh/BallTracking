@@ -66,6 +66,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private boolean isLeftSelected =false;
     private boolean isRightSelected =false;
     private boolean isBallSelected =false;
+    private boolean leftTouchLock=false;
+    private boolean rightTouchLock=false;
+    private boolean ballTouchLock=false;
 
     private static final int TOUCH_DONOTHING=0;
     private static final int TOUCH_LEFT=1;
@@ -145,6 +148,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             leftLeadRail.x=x;
             leftLeadRail.y=y;
             isLeftSelected=true;
+            leftTouchLock=true;
 
         }
         else if (touchMode==TOUCH_RIGHT){
@@ -159,6 +163,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             rightLeadRail.x=x;
             rightLeadRail.y=y;
             isRightSelected=true;
+            rightTouchLock=true;
         }
         else if (touchMode==TOUCH_BALL) {
             // Calculate average color of touched region
@@ -172,6 +177,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             ball.x=x;
             ball.y=y;
             isBallSelected=true;
+            ballTouchLock=true;
         }
 
 
@@ -311,25 +317,46 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
 
             if (isLeftSelected){
-                if(leftTrackZone.width != 0 && leftTrackZone.height!= 0) {
-                    myInRangeByBolbColorAndHSV(mBlobColorHsvLeft, TOUCH_LEFT);
-                    setLeadRailByThre(leftTrackZone, leftLeadRail, TOUCH_LEFT);
+                if(leftTrackZone.width != 0 && leftTrackZone.height!= 0 ) {
+                    if(leftTouchLock) {
+                        leftTouchLock=false;
+                    }
+                    else {
+                        myInRangeByBolbColorAndHSV(mBlobColorHsvLeft, TOUCH_LEFT);
+                        setLeadRailByThre(leftTrackZone, leftLeadRail, TOUCH_LEFT);
+                    }
                 }
-                setTrackZoneByLeadRail(mRgbaTemp,leftTrackZone,leftLeadRail,TOUCH_LEFT);
+                    setTrackZoneByLeadRail(mRgbaTemp, leftTrackZone, leftLeadRail, TOUCH_LEFT);
+
+
             }
             if (isRightSelected){
                 if(rightTrackZone.width != 0 && rightTrackZone.height!= 0) {
-                    myInRangeByBolbColorAndHSV(mBlobColorHsvRight, TOUCH_RIGHT);
-                    setLeadRailByThre(rightTrackZone, rightLeadRail, TOUCH_RIGHT);
+                    if(rightTouchLock){
+                        rightTouchLock=false;
+                    }
+                    else {
+                        myInRangeByBolbColorAndHSV(mBlobColorHsvRight, TOUCH_RIGHT);
+                        setLeadRailByThre(rightTrackZone, rightLeadRail, TOUCH_RIGHT);
+                    }
                 }
-                setTrackZoneByLeadRail(mRgbaTemp,rightTrackZone,rightLeadRail,TOUCH_RIGHT);
+
+                    setTrackZoneByLeadRail(mRgbaTemp, rightTrackZone, rightLeadRail, TOUCH_RIGHT);
+
             }
             if(isBallSelected){
                 if(ballTrackZone.width != 0 && ballTrackZone.height!= 0) {
-                    myInRangeByBolbColorAndHSV(mBlobColorHsvBall, TOUCH_BALL);
-                    setLeadRailByThre(ballTrackZone, ball, TOUCH_BALL);
+                    if(ballTouchLock){
+                        ballTouchLock=false;
+                    }
+                    else {
+                        myInRangeByBolbColorAndHSV(mBlobColorHsvBall, TOUCH_BALL);
+                        setLeadRailByThre(ballTrackZone, ball, TOUCH_BALL);
+                    }
                 }
-                setTrackZoneByLeadRail(mRgbaTemp,ballTrackZone,ball,TOUCH_BALL);
+
+                    setTrackZoneByLeadRail(mRgbaTemp, ballTrackZone, ball, TOUCH_BALL);
+
             }
 
         }
