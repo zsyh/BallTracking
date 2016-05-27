@@ -301,11 +301,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
             }
             if(rightTrackZone.width != 0 && rightTrackZone.height!= 0) {
-                mSelected = mRgbaTemp.submat(leftTrackZone);
+                mSelected = mRgbaTemp.submat(rightTrackZone);
                 Imgproc.cvtColor(mSelected, mHSVMatRight, Imgproc.COLOR_RGB2HSV_FULL);
             }
             if(ballTrackZone.width != 0 && ballTrackZone.height!= 0) {
-                mSelected = mRgbaTemp.submat(leftTrackZone);
+                mSelected = mRgbaTemp.submat(ballTrackZone);
                 Imgproc.cvtColor(mSelected, mHSVMatBall, Imgproc.COLOR_RGB2HSV_FULL);
             }
 
