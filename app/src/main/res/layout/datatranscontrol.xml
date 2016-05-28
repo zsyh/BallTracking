@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:text="停止发送位置"
+        android:enabled="false"
         />
 <RelativeLayout
     android:layout_width="wrap_content"

@@ -98,6 +98,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private InputStream inPutStream;
     private BufferedReader bufferedReader;
     private boolean isConnected=false;
+    private boolean isPositionSending=false;
     private Handler sendHandler;
     private Handler recvHandler;
 
@@ -493,6 +494,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     return;
                 }
 
+
+
+
                 Message msg = sendHandler.obtainMessage();
                 msg.what=1;
                 Bundle data = new Bundle();
@@ -520,6 +524,25 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         buttonReverse=(Button) viewDataTransControl.findViewById(R.id.buttonReverse);
         buttonDataTransControlReturn=(Button) viewDataTransControl.findViewById(R.id.buttonDataTransControlReturn);
 
+        buttonStartSendPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                startSendPosition();
+
+
+            }
+        });
+
+        buttonStopSendPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                stopSendPosition();
+
+            }
+        });
+
 
         buttonDataTransControlReturn.setOnClickListener(returnOnClickListener);
 
@@ -527,6 +550,36 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     }
 
 
+    private void startSendPosition(){
+
+        isPositionSending=true;
+        editTextTargetPosition.setEnabled(false);
+        editTextStep.setEnabled(false);
+        buttonSetTargetPosition.setEnabled(false);
+        buttonForeward.setEnabled(false);
+        buttonClear.setEnabled(false);
+        buttonReverse.setEnabled(false);
+        buttonSetPID.setEnabled(false);
+
+        buttonStartSendPosition.setEnabled(false);
+        buttonStopSendPosition.setEnabled(true);
+
+    }
+
+    private void stopSendPosition(){
+
+        isPositionSending=false;
+        editTextTargetPosition.setEnabled(true);
+        editTextStep.setEnabled(true);
+        buttonSetTargetPosition.setEnabled(true);
+        buttonForeward.setEnabled(true);
+        buttonClear.setEnabled(true);
+        buttonReverse.setEnabled(true);
+        buttonSetPID.setEnabled(true);
+
+        buttonStartSendPosition.setEnabled(true);
+        buttonStopSendPosition.setEnabled(false);
+    }
 
     class ReturnOnClickListener implements View.OnClickListener{
         @Override
@@ -806,14 +859,23 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     position*=600;//转换成毫米
                     textViewPosition.setText("位置:" + position);
                     //Log.e("HelloOpenCV","位置:" + position);
-                }
 
+                    if(isConnected && isPositionSending) {
+                        String text = Integer.toString((int) position);
+
+                        Message msg = sendHandler.obtainMessage();
+                        msg.what = 1;
+                        Bundle data = new Bundle();
+                        data.putString("data", "*L" + text + "L" + text + "#");
+                        msg.setData(data);
+                        sendHandler.sendMessage(msg);
+                    }
+
+
+                }
 
             }
         });
-
-
-
         return mRgbaTemp;
     }
 
