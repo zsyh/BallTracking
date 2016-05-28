@@ -47,12 +47,14 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="100dp"
         android:textSize="10dp"
+        android:textColor="#0000FF"
         android:text="导轨左:(xxxx,xxxx)"/>
     <TextView
         android:id="@+id/textViewRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10dp"
+        android:textColor="#0000FF"
         android:text="导轨右:(xxxx,xxxx)"
         android:layout_toRightOf="@id/textViewLeft"/>
     <TextView
@@ -60,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="10dp"
+        android:textColor="#0000FF"
         android:text="小球:(xxxx,xxxx)"
         android:layout_toRightOf="@id/textViewRight"/>
     <TextView
@@ -68,6 +71,7 @@
         android:layout_height="wrap_content"
         android:textSize="10dp"
         android:text="位置:"
+        android:textColor="#0000FF"
         android:layout_toRightOf="@id/textViewBall"/>
 
 </RelativeLayout>
