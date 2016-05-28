@@ -16,6 +16,9 @@ package com.zaizai1.balltracking;
         import org.opencv.imgproc.Moments;
 
         import android.app.Activity;
+        import android.bluetooth.BluetoothAdapter;
+        import android.bluetooth.BluetoothDevice;
+        import android.bluetooth.BluetoothSocket;
         import android.os.Bundle;
         import android.os.Handler;
         import android.os.Message;
@@ -32,6 +35,13 @@ package com.zaizai1.balltracking;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
         import android.widget.TextView;
+
+        import java.io.BufferedReader;
+        import java.io.IOException;
+        import java.io.InputStream;
+        import java.io.InputStreamReader;
+        import java.io.OutputStream;
+        import java.util.UUID;
 
 public class MainActivity extends Activity implements CvCameraViewListener2, View.OnTouchListener {
     private static final String TAG = "OCVSample::Activity";
@@ -79,6 +89,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private EditText editTextTargetPosition,editTextStep;
     private Button buttonStartSendPosition,buttonStopSendPosition,buttonSetTargetPosition,buttonForeward,buttonClear,buttonReverse,buttonDataTransControlReturn;
 
+    private BluetoothAdapter defaultAdapter;
+    private BluetoothSocket bluetoothSocket;
+    private OutputStream outPutStream;
+    private InputStream inPutStream;
+    private BufferedReader bufferedReader;
 
     private boolean isSelected = false;
     private boolean isLeftSelected =false;
@@ -226,6 +241,18 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         mOpenCvCameraView.setCvCameraViewListener(this);
 
 
+        defaultAdapter=BluetoothAdapter.getDefaultAdapter();
+
+        if(defaultAdapter==null)
+        {
+            Log.e("BluetoothTest","未找到蓝牙设备！");
+        }
+        else {
+            Log.e("BluetoothTest", "找到蓝牙设备！");
+        }
+
+
+
         //动态加载
         inflater = LayoutInflater.from(this);
         linearLayout = (LinearLayout) findViewById(R.id.linearLayout);//主窗口上的
@@ -298,7 +325,33 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             @Override
             public void onClick(View v) {
 
+                if(defaultAdapter==null)
+                {
+                    return;
+                }
+                final BluetoothDevice bluetoothDevice=defaultAdapter.getRemoteDevice("98:D3:35:00:9B:F1");//MAC地址
+
+                try {
+                    bluetoothSocket=bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+                } catch (IOException e) {
+
+                    Log.e("BluetoothTest","socket初始化时IOException:"+e);
+                }
+
+                Log.e("BluetoothTest","socket初始成功！");
+                if(bluetoothSocket==null)
+                {
+                    Log.e("BluetoothTest","socket未初始化！");
+                    return;
+                }
+
+
+                Thread connectingThread = new ConnectingThread();
+                connectingThread.start();
+
+                //onClickEND
             }
+            //setEND
         });
 
 
@@ -379,6 +432,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     }
 
 
+
     class ReturnOnClickListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
@@ -392,6 +446,95 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     }
 
 
+
+    class ConnectingThread extends Thread{
+
+        @Override
+        public void run() {
+            try {
+                bluetoothSocket.connect();
+                SendThread sendThread = new SendThread();
+                sendThread.start();
+                RecvThread recvThread = new RecvThread();
+                recvThread.start();
+                Log.e("BluetoothTest","socket连接！");
+
+            } catch (IOException e) {
+                try {
+                    bluetoothSocket.close();
+                } catch (IOException e1) {
+                    Log.e("BluetoothTest", "unable to close() "+
+                            " socket during connection failure", e1);
+                }
+            }
+
+        }
+
+    }
+
+
+
+
+    class SendThread extends Thread{
+        @Override
+        public void run() {
+
+            Log.e("BluetoothTest","sendThread started!");
+
+
+
+            try {
+                outPutStream = bluetoothSocket.getOutputStream();
+            } catch (IOException e) {
+                Log.e("BluetoothTest","socket getOutputStream()时 IOException:"+e);
+            }
+
+            // byte [] sendBuffer = new byte[1024];
+
+            //     for(int i=0;i<10;i++)
+            //     {
+            //         byte j = (byte)((i+48) & 0xFF);
+            //         sendBuffer[i]=j;
+            //     }
+
+
+
+            try {
+                //     outPutStream.write(sendBuffer,0,10);
+                outPutStream.write("*P1000P1000#".getBytes());
+            } catch (IOException e) {
+                Log.e("BluetoothTest","socket send时 IOException:"+e);
+            }
+
+        }
+    }
+
+    class RecvThread extends Thread{
+        @Override
+        public void run() {
+
+            Log.e("BluetoothTest","recvThread started!");
+
+
+            try {
+                bufferedReader= new BufferedReader(new InputStreamReader(bluetoothSocket.getInputStream()));
+            } catch (IOException e) {
+                Log.e("BluetoothTest","socket getInputStream()时 IOException:"+e);
+            }
+
+
+            try {
+                String str=bufferedReader.readLine();
+                //str!=null才有效！
+                str.trim();
+                Log.e("BluetoothTest","recv成功，内容："+str);
+            } catch (IOException e) {
+                Log.e("BluetoothTest","socket recv时 IOException:"+e);
+            }
+
+
+        }
+    }
 
 
     @Override
