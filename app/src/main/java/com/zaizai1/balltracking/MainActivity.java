@@ -543,6 +543,94 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
         });
 
+        buttonSetTargetPosition.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextTargetPosition.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*G"+text+ "G"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+            }
+        });
+
+        buttonForeward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextStep.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*A"+text+ "A"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+
+            }
+        });
+
+        buttonReverse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextStep.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*B"+text+ "B"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+            }
+        });
+
+
+        buttonClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*C0C0#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+            }
+        });
+
+
 
         buttonDataTransControlReturn.setOnClickListener(returnOnClickListener);
 
