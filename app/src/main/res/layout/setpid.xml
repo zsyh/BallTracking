@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/linearLayoutSetPID">
+
+    <EditText
+        android:id="@+id/editTextP"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:hint="P"
+        />
+    <EditText
+        android:id="@+id/editTextI"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:hint="I"
+        />
+    <EditText
+        android:id="@+id/editTextD"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:hint="D"
+        />
+    <EditText
+        android:id="@+id/editTextIThreshold"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:hint="I阈值"
+        />
+    <Button
+        android:id="@+id/buttonSendPID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送"
+        />
+    <Button
+        android:id="@+id/buttonSetPIDReturn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="返回" />
+
+</LinearLayout>
