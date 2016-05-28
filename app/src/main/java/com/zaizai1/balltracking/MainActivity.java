@@ -21,6 +21,7 @@ package com.zaizai1.balltracking;
         import android.bluetooth.BluetoothSocket;
         import android.os.Bundle;
         import android.os.Handler;
+        import android.os.Looper;
         import android.os.Message;
         import android.util.Log;
         import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ package com.zaizai1.balltracking;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
         import android.widget.TextView;
+        import android.widget.Toast;
 
         import java.io.BufferedReader;
         import java.io.IOException;
@@ -42,6 +44,7 @@ package com.zaizai1.balltracking;
         import java.io.InputStreamReader;
         import java.io.OutputStream;
         import java.util.UUID;
+        import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements CvCameraViewListener2, View.OnTouchListener {
     private static final String TAG = "OCVSample::Activity";
@@ -84,7 +87,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private Button buttonSetRangeReturn;
     //setPID
     private EditText editTextP,editTextI,editTextD,editTextIThreshold;
-    private Button buttonSendPID,buttonSetPIDReturn;
+    private Button buttonSendP,buttonSendI,buttonSendD,buttonSendIThreshold,buttonSetPIDReturn;
     //dataTransControl
     private EditText editTextTargetPosition,editTextStep;
     private Button buttonStartSendPosition,buttonStopSendPosition,buttonSetTargetPosition,buttonForeward,buttonClear,buttonReverse,buttonDataTransControlReturn;
@@ -94,6 +97,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private OutputStream outPutStream;
     private InputStream inPutStream;
     private BufferedReader bufferedReader;
+    private boolean isConnected=false;
+    private Handler sendHandler;
+    private Handler recvHandler;
 
     private boolean isSelected = false;
     private boolean isLeftSelected =false;
@@ -400,15 +406,104 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         editTextD=(EditText)viewSetPID.findViewById(R.id.editTextD);
         editTextIThreshold=(EditText)viewSetPID.findViewById(R.id.editTextIThreshold);
 
-        buttonSendPID=(Button)viewSetPID.findViewById(R.id.buttonSendPID);
+        buttonSendP=(Button)viewSetPID.findViewById(R.id.buttonSendP);
+        buttonSendI=(Button)viewSetPID.findViewById(R.id.buttonSendI);
+        buttonSendD=(Button)viewSetPID.findViewById(R.id.buttonSendD);
+        buttonSendIThreshold=(Button)viewSetPID.findViewById(R.id.buttonSendIThreshold);
         buttonSetPIDReturn=(Button)viewSetPID.findViewById(R.id.buttonSetPIDReturn);
 
-        buttonSendPID.setOnClickListener(new View.OnClickListener() {
+        buttonSendP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                String text = editTextP.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*P"+text+ "P"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
             }
         });
+
+
+        buttonSendI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextI.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*I"+text+ "I"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+
+            }
+        });
+
+        buttonSendD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextD.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*D"+text+ "D"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+
+            }
+        });
+
+        buttonSendIThreshold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String text = editTextIThreshold.getText().toString();
+                Pattern pattern = Pattern.compile("[0-9]*");
+                if(!pattern.matcher(text).matches()){//判断是否为数字
+
+                    Toast.makeText(getApplicationContext(),"发送中止：输入的不是数字", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*T"+text+ "T"+ text + "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+
+            }
+        });
+
 
         buttonSetPIDReturn.setOnClickListener(returnOnClickListener);
 
@@ -457,15 +552,22 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 sendThread.start();
                 RecvThread recvThread = new RecvThread();
                 recvThread.start();
+                isConnected=true;
                 Log.e("BluetoothTest","socket连接！");
 
             } catch (IOException e) {
+
+                Log.e("BluetoothTest", "connecting IOException:"+ e);
+
+
                 try {
                     bluetoothSocket.close();
                 } catch (IOException e1) {
                     Log.e("BluetoothTest", "unable to close() "+
-                            " socket during connection failure", e1);
+                            "socket during connection failure", e1);
                 }
+
+
             }
 
         }
@@ -480,13 +582,13 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         public void run() {
 
             Log.e("BluetoothTest","sendThread started!");
-
-
+            Looper.prepare();
 
             try {
                 outPutStream = bluetoothSocket.getOutputStream();
             } catch (IOException e) {
                 Log.e("BluetoothTest","socket getOutputStream()时 IOException:"+e);
+
             }
 
             // byte [] sendBuffer = new byte[1024];
@@ -498,13 +600,31 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             //     }
 
 
+            sendHandler= new Handler(){
 
-            try {
-                //     outPutStream.write(sendBuffer,0,10);
-                outPutStream.write("*P1000P1000#".getBytes());
-            } catch (IOException e) {
-                Log.e("BluetoothTest","socket send时 IOException:"+e);
-            }
+                @Override
+                public void handleMessage(Message msg) {
+
+
+                    if(msg.what==1) {
+
+                        Bundle receiveBundle= msg.getData();
+                        String s=receiveBundle.getString("data");
+
+                        try {
+                            //     outPutStream.write(sendBuffer,0,10);
+                            outPutStream.write(s.getBytes());
+                        } catch (IOException e) {
+                            Log.e("BluetoothTest","socket send时 IOException:"+e);
+                        }
+
+
+                    }
+
+                }
+            };
+            Looper.loop();
+
 
         }
     }
