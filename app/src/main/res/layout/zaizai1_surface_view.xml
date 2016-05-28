@@ -12,62 +12,81 @@
         opencv:show_fps="true"
         opencv:camera_id="any" />
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RadioButton
-            android:id="@+id/radioButtonDoNothing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="空点击事件"
-            android:layout_marginTop="15dp"/>
-        <RadioButton
-            android:id="@+id/radioButtonLeft"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="导轨左侧" />
-        <RadioButton
-            android:id="@+id/radioButtonRight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="导轨右侧" />
-        <RadioButton
-            android:id="@+id/radioButtonBall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="小球" />
-    </RadioGroup>
+   <LinearLayout
+       android:id="@+id/linearLayout"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="15dp"
+       android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textViewLeft"
+   </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="100dp"
-        android:textSize="10dp"
-        android:text="导轨左:(xxxx,xxxx)"/>
-    <TextView
-        android:id="@+id/textViewRight"
+        android:orientation="vertical"
+        android:layout_below="@id/linearLayout">
+        <Button
+            android:id="@+id/buttonSetRange"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="范围框定"
+             />
+        <Button
+            android:id="@+id/buttonBlueToothConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="蓝牙连接"
+            />
+
+        <Button
+            android:id="@+id/buttonSetPID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="设定PID"
+             />
+
+        <Button
+            android:id="@+id/buttonDataTransControl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="数据传输控制"
+             />
+    </LinearLayout>
+
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="10dp"
-        android:text="导轨右:(xxxx,xxxx)"
-        android:layout_toRightOf="@id/textViewLeft"/>
-    <TextView
-        android:id="@+id/textViewBall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="10dp"
-        android:text="小球:(xxxx,xxxx)"
-        android:layout_toRightOf="@id/textViewRight"/>
-    <TextView
-        android:id="@+id/textViewPosition"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="10dp"
-        android:text="位置:"
-        android:layout_toRightOf="@id/textViewBall"/>
+        android:orientation="horizontal"
+        android:layout_marginLeft="100dp">
+
+        <TextView
+            android:id="@+id/textViewLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="100dp"
+            android:textSize="10dp"
+            android:text="导轨左:(xxxx,xxxx)"/>
+        <TextView
+            android:id="@+id/textViewRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="导轨右:(xxxx,xxxx)" />
+        <TextView
+            android:id="@+id/textViewBall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="小球:(xxxx,xxxx)" />
+        <TextView
+            android:id="@+id/textViewPosition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="位置:" />
+    </LinearLayout>
+
 
 </RelativeLayout>

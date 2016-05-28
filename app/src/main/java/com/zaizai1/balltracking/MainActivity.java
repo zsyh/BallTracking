@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private static final int TOUCH_BALL=3;
     private int touchMode=TOUCH_DONOTHING;
 
-    private static final int RECTHALFLENGTH=100;
+    private static final int RECTHALFLENGTH=80;
 
 
 
