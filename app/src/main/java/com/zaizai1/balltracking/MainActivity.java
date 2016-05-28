@@ -17,6 +17,8 @@ package com.zaizai1.balltracking;
 
         import android.app.Activity;
         import android.os.Bundle;
+        import android.os.Handler;
+        import android.os.Message;
         import android.util.Log;
         import android.view.MenuItem;
         import android.view.MotionEvent;
@@ -25,6 +27,7 @@ package com.zaizai1.balltracking;
         import android.view.WindowManager;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
+        import android.widget.TextView;
 
 public class MainActivity extends Activity implements CvCameraViewListener2, View.OnTouchListener {
     private static final String TAG = "OCVSample::Activity";
@@ -60,7 +63,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
     private RadioGroup radioGroup;
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
-
+    private TextView textViewLeft,textViewRight,textViewBall,textViewPosition;
 
     private boolean isSelected = false;
     private boolean isLeftSelected =false;
@@ -76,7 +79,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private static final int TOUCH_BALL=3;
     private int touchMode=TOUCH_DONOTHING;
 
-    private static final int RECTHALFLENGTH=150;
+    private static final int RECTHALFLENGTH=100;
+
+
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -206,11 +211,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         mOpenCvCameraView.setCvCameraViewListener(this);
 
 
+
         radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
         radioButtonDoNothing=(RadioButton)findViewById(R.id.radioButtonDoNothing);
         radioButtonLeft=(RadioButton)findViewById(R.id.radioButtonLeft);
         radioButtonRight=(RadioButton)findViewById(R.id.radioButtonRight);
         radioButtonBall=(RadioButton)findViewById(R.id.radioButtonBall);
+        textViewLeft=(TextView)findViewById(R.id.textViewLeft);
+        textViewRight=(TextView)findViewById(R.id.textViewRight);
+        textViewBall=(TextView)findViewById(R.id.textViewBall);
+        textViewPosition=(TextView)findViewById(R.id.textViewPosition);
+
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -360,6 +371,43 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
 
         }
+
+        //处理小球位置信息
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if(isLeftSelected){
+                    textViewLeft.setText("导轨左:("+leftLeadRail.x  + ","+leftLeadRail.y + ")");
+                }
+                if(isRightSelected){
+                    textViewRight.setText("导轨右:("+rightLeadRail.x  + ","+rightLeadRail.y + ")");
+                }
+                if(isBallSelected){
+                    textViewBall.setText("小球:("+ball.x  + ","+ball.y + ")");
+                }
+
+
+                if(isLeftSelected && isRightSelected && isBallSelected){
+                    double leftToBally=ball.y-leftLeadRail.y;
+                    double leftToRightx=rightLeadRail.x-leftLeadRail.x;
+                    double leftToRighty=rightLeadRail.y-leftLeadRail.y;
+                    double k = leftToRighty/leftToRightx;
+                    double k_1 = leftToRightx/leftToRighty;
+                    double modifiedx=(leftToBally+ k_1 * ball.x + k *leftLeadRail.x)/(k + k_1);
+                    double position=(modifiedx-leftLeadRail.x)/(rightLeadRail.x-leftLeadRail.x);
+                    position*=600;//转换成毫米
+                    textViewPosition.setText("位置:" + position);
+                    //Log.e("HelloOpenCV","位置:" + position);
+                }
+
+
+            }
+        });
+
+
+
         return mRgbaTemp;
     }
 

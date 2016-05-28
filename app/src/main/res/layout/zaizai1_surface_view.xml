@@ -41,6 +41,33 @@
             android:text="小球" />
     </RadioGroup>
 
-
+    <TextView
+        android:id="@+id/textViewLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:textSize="10dp"
+        android:text="导轨左:(xxxx,xxxx)"/>
+    <TextView
+        android:id="@+id/textViewRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:text="导轨右:(xxxx,xxxx)"
+        android:layout_toRightOf="@id/textViewLeft"/>
+    <TextView
+        android:id="@+id/textViewBall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:text="小球:(xxxx,xxxx)"
+        android:layout_toRightOf="@id/textViewRight"/>
+    <TextView
+        android:id="@+id/textViewPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:text="位置:"
+        android:layout_toRightOf="@id/textViewBall"/>
 
 </RelativeLayout>
