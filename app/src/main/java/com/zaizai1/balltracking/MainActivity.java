@@ -20,11 +20,15 @@ package com.zaizai1.balltracking;
         import android.os.Handler;
         import android.os.Message;
         import android.util.Log;
+        import android.view.LayoutInflater;
         import android.view.MenuItem;
         import android.view.MotionEvent;
         import android.view.SurfaceView;
         import android.view.View;
         import android.view.WindowManager;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.LinearLayout;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
         import android.widget.TextView;
@@ -61,9 +65,20 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private Rect rightTrackZone = new Rect();
     private Rect ballTrackZone = new Rect();
 
+    //主界面
+    private TextView textViewLeft,textViewRight,textViewBall,textViewPosition;
+    private Button buttonSetRange,buttonBlueToothConnect,buttonSetPID,buttonDataTransControl;
+    //SetRange
     private RadioGroup radioGroup;
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
-    private TextView textViewLeft,textViewRight,textViewBall,textViewPosition;
+    private Button buttonSetRangeReturn;
+    //setPID
+    private EditText editTextP,editTextI,editTextD,editTextIThreshold;
+    private Button buttonSendPID,buttonSetPIDReturn;
+    //dataTransControl
+    private EditText editTextTargetPosition,editTextStep;
+    private Button buttonStartSendPosition,buttonStopSendPosition,buttonSetTargetPosition,buttonForeward,buttonClear,buttonReverse,buttonDataTransControlReturn;
+
 
     private boolean isSelected = false;
     private boolean isLeftSelected =false;
@@ -193,8 +208,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
     }
 
-
-
+    private LayoutInflater inflater;
+    private LinearLayout linearLayout;
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,16 +226,92 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         mOpenCvCameraView.setCvCameraViewListener(this);
 
 
+        //动态加载
+        inflater = LayoutInflater.from(this);
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);//主窗口上的
 
-        radioGroup=(RadioGroup)findViewById(R.id.radioGroup);
-        radioButtonDoNothing=(RadioButton)findViewById(R.id.radioButtonDoNothing);
-        radioButtonLeft=(RadioButton)findViewById(R.id.radioButtonLeft);
-        radioButtonRight=(RadioButton)findViewById(R.id.radioButtonRight);
-        radioButtonBall=(RadioButton)findViewById(R.id.radioButtonBall);
+
+        final View viewSetRange = inflater.inflate(R.layout.setrange, null);
+        final View viewSetPID = inflater.inflate(R.layout.setpid, null);
+        final View viewDataTransControl = inflater.inflate(R.layout.datatranscontrol, null);
+
+        final LinearLayout linearLayoutSetRange = (LinearLayout) viewSetRange.findViewById(R.id.linearLayoutSetRange);
+        final LinearLayout linearLayoutSetPID = (LinearLayout) viewSetPID.findViewById(R.id.linearLayoutSetPID);
+        final LinearLayout linearLayoutDataTransControl = (LinearLayout) viewDataTransControl.findViewById(R.id.linearLayoutDataTransControl);
+
+
+        //主窗口
+        buttonSetRange=(Button)findViewById(R.id.buttonSetRange);
+        buttonBlueToothConnect=(Button)findViewById(R.id.buttonBlueToothConnect);
+        buttonSetPID=(Button)findViewById(R.id.buttonSetPID);
+        buttonDataTransControl=(Button)findViewById(R.id.buttonDataTransControl);
         textViewLeft=(TextView)findViewById(R.id.textViewLeft);
         textViewRight=(TextView)findViewById(R.id.textViewRight);
         textViewBall=(TextView)findViewById(R.id.textViewBall);
         textViewPosition=(TextView)findViewById(R.id.textViewPosition);
+
+
+        buttonSetRange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                linearLayout.removeAllViews();
+                linearLayout.addView(linearLayoutSetRange);
+                buttonSetRange.setVisibility(View.INVISIBLE);
+                buttonBlueToothConnect.setVisibility(View.INVISIBLE);
+                buttonSetPID.setVisibility(View.INVISIBLE);
+                buttonDataTransControl.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        buttonSetPID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                linearLayout.removeAllViews();
+                linearLayout.addView(linearLayoutSetPID);
+                buttonSetRange.setVisibility(View.INVISIBLE);
+                buttonBlueToothConnect.setVisibility(View.INVISIBLE);
+                buttonSetPID.setVisibility(View.INVISIBLE);
+                buttonDataTransControl.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        buttonDataTransControl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                linearLayout.removeAllViews();
+                linearLayout.addView(linearLayoutDataTransControl);
+                buttonSetRange.setVisibility(View.INVISIBLE);
+                buttonBlueToothConnect.setVisibility(View.INVISIBLE);
+                buttonSetPID.setVisibility(View.INVISIBLE);
+                buttonDataTransControl.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
+
+        buttonBlueToothConnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
+
+        ReturnOnClickListener returnOnClickListener = new ReturnOnClickListener();
+
+        //SetRange
+        radioGroup=(RadioGroup)viewSetRange.findViewById(R.id.radioGroup);
+        radioButtonDoNothing=(RadioButton)viewSetRange.findViewById(R.id.radioButtonDoNothing);
+        radioButtonLeft=(RadioButton)viewSetRange.findViewById(R.id.radioButtonLeft);
+        radioButtonRight=(RadioButton)viewSetRange.findViewById(R.id.radioButtonRight);
+        radioButtonBall=(RadioButton)viewSetRange.findViewById(R.id.radioButtonBall);
+        buttonSetRangeReturn=(Button) viewSetRange.findViewById(R.id.buttonSetRangeReturn);
 
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -246,10 +337,62 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
         });
 
+        buttonSetRangeReturn.setOnClickListener(returnOnClickListener);
 
+
+
+        //SetPID
+        editTextP=(EditText)viewSetPID.findViewById(R.id.editTextP);
+        editTextI=(EditText)viewSetPID.findViewById(R.id.editTextI);
+        editTextD=(EditText)viewSetPID.findViewById(R.id.editTextD);
+        editTextIThreshold=(EditText)viewSetPID.findViewById(R.id.editTextIThreshold);
+
+        buttonSendPID=(Button)viewSetPID.findViewById(R.id.buttonSendPID);
+        buttonSetPIDReturn=(Button)viewSetPID.findViewById(R.id.buttonSetPIDReturn);
+
+        buttonSendPID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        buttonSetPIDReturn.setOnClickListener(returnOnClickListener);
+
+
+        //dataTransControl
+        editTextTargetPosition=(EditText)viewDataTransControl.findViewById(R.id.editTextTargetPosition);
+        editTextStep=(EditText)viewDataTransControl.findViewById(R.id.editTextStep);
+
+        buttonStartSendPosition=(Button) viewDataTransControl.findViewById(R.id.buttonStartSendPosition);
+        buttonStopSendPosition=(Button) viewDataTransControl.findViewById(R.id.buttonStopSendPosition);
+        buttonSetTargetPosition=(Button) viewDataTransControl.findViewById(R.id.buttonSetTargetPosition);
+        buttonForeward=(Button) viewDataTransControl.findViewById(R.id.buttonForeward);
+        buttonClear=(Button) viewDataTransControl.findViewById(R.id.buttonClear);
+        buttonReverse=(Button) viewDataTransControl.findViewById(R.id.buttonReverse);
+        buttonDataTransControlReturn=(Button) viewDataTransControl.findViewById(R.id.buttonDataTransControlReturn);
+
+
+        buttonDataTransControlReturn.setOnClickListener(returnOnClickListener);
 
 
     }
+
+
+    class ReturnOnClickListener implements View.OnClickListener{
+        @Override
+        public void onClick(View v) {
+            linearLayout.removeAllViews();
+            buttonSetRange.setVisibility(View.VISIBLE);
+            buttonBlueToothConnect.setVisibility(View.VISIBLE);
+            buttonSetPID.setVisibility(View.VISIBLE);
+            buttonDataTransControl.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+
+
 
     @Override
     public void onPause()

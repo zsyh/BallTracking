@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/linearLayoutDataTransControl">
 
     <Button
         android:id="@+id/buttonStartSendPosition"
@@ -48,17 +50,17 @@
         android:text="正转"/>
 
     <Button
-        android:id="@+id/buttonNeutral"
+        android:id="@+id/buttonClear"
         android:layout_width="70dp"
         android:layout_height="40dp"
         android:layout_below="@id/editTextStep"
-        android:text="回中"/>
+        android:text="清零"/>
     <Button
         android:id="@+id/buttonReverse"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_below="@id/buttonForeward"
-        android:layout_toRightOf="@id/buttonNeutral"
+        android:layout_toRightOf="@id/buttonClear"
         android:text="反转"/>
 
 </RelativeLayout>
