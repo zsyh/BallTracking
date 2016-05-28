@@ -65,25 +65,28 @@
             android:id="@+id/textViewLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="100dp"
             android:textSize="10dp"
+            android:textColor="#0000FF"
             android:text="导轨左:(xxxx,xxxx)"/>
         <TextView
             android:id="@+id/textViewRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10dp"
+            android:textColor="#0000FF"
             android:text="导轨右:(xxxx,xxxx)" />
         <TextView
             android:id="@+id/textViewBall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="10dp"
+            android:textColor="#0000FF"
             android:text="小球:(xxxx,xxxx)" />
         <TextView
             android:id="@+id/textViewPosition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#0000FF"
             android:textSize="10dp"
             android:text="位置:" />
     </LinearLayout>
