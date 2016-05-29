@@ -360,10 +360,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     bluetoothSocket=bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
                 } catch (IOException e) {
 
-                    Log.e("BluetoothTest","socket初始化时IOException:"+e);
+                    Log.e("BluetoothTest","socket初始化时IOException:"+e);//一般不会有
                 }
 
-                Log.e("BluetoothTest","socket初始成功！");
+                Log.e("BluetoothTest","socket初始成功！");//一般都是成功
                 if(bluetoothSocket==null)
                 {
                     Log.e("BluetoothTest","socket未初始化！");
@@ -373,6 +373,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 Thread connectingThread = new ConnectingThread();
                 connectingThread.start();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        connectStartUI();
+
+                    }
+                });
+
 
                 //onClickEND
             }
@@ -546,7 +556,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             @Override
             public void onClick(View v) {
 
-                startSendPosition();
+                startSendPositionUI();
 
 
             }
@@ -556,7 +566,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             @Override
             public void onClick(View v) {
 
-                stopSendPosition();
+                stopSendPositionUI();
 
             }
         });
@@ -656,7 +666,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     }
 
 
-    private void startSendPosition(){
+    private void startSendPositionUI(){
 
         isPositionSending=true;
         editTextTargetPosition.setEnabled(false);
@@ -672,7 +682,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
     }
 
-    private void stopSendPosition(){
+    private void stopSendPositionUI(){
 
         isPositionSending=false;
         editTextTargetPosition.setEnabled(true);
@@ -685,6 +695,73 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         buttonStartSendPosition.setEnabled(true);
         buttonStopSendPosition.setEnabled(false);
+    }
+
+    private void connectStartUI(){
+
+        buttonBlueToothConnect.setEnabled(false);
+
+    }
+
+    private void connectFailUI() {
+
+        buttonBlueToothConnect.setEnabled(true);
+
+    }
+
+    private void connectionEstablishUI(){
+        //主界面
+        buttonSetPID.setEnabled(true);
+        buttonDataTransControl.setEnabled(true);
+
+        //setPID
+        editTextP.setEnabled(true);
+        editTextI.setEnabled(true);
+        editTextD.setEnabled(true);
+        editTextIThreshold.setEnabled(true);
+        buttonSendP.setEnabled(true);
+        buttonSendI.setEnabled(true);
+        buttonSendD.setEnabled(true);
+        buttonSendIThreshold.setEnabled(true);
+
+        //dataTransControl
+        editTextTargetPosition.setEnabled(true);
+        editTextStep.setEnabled(true);
+        buttonStartSendPosition.setEnabled(true);
+        buttonStopSendPosition.setEnabled(false);
+        buttonSetTargetPosition.setEnabled(true);
+        buttonForeward.setEnabled(true);
+        buttonClear.setEnabled(true);
+        buttonReverse.setEnabled(true);
+
+    }
+
+    private void connectionLoseUI(){
+
+        buttonSetPID.setEnabled(false);
+        buttonDataTransControl.setEnabled(false);
+        buttonBlueToothConnect.setEnabled(true);
+
+        //setPID
+        editTextP.setEnabled(false);
+        editTextI.setEnabled(false);
+        editTextD.setEnabled(false);
+        editTextIThreshold.setEnabled(false);
+        buttonSendP.setEnabled(false);
+        buttonSendI.setEnabled(false);
+        buttonSendD.setEnabled(false);
+        buttonSendIThreshold.setEnabled(false);
+
+        //dataTransControl
+        editTextTargetPosition.setEnabled(false);
+        editTextStep.setEnabled(false);
+        buttonStartSendPosition.setEnabled(false);
+        buttonStopSendPosition.setEnabled(false);
+        buttonSetTargetPosition.setEnabled(false);
+        buttonForeward.setEnabled(false);
+        buttonClear.setEnabled(false);
+        buttonReverse.setEnabled(false);
+
     }
 
     class ReturnOnClickListener implements View.OnClickListener{
@@ -711,17 +788,41 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 sendThread.start();
                 RecvThread recvThread = new RecvThread();
                 recvThread.start();
+
+                //连接成功
                 isConnected=true;
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        connectionEstablishUI();
+
+                    }
+                });
+
+
+
                 Log.e("BluetoothTest","socket连接！");
 
             } catch (IOException e) {
 
                 Log.e("BluetoothTest", "connecting IOException:"+ e);
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        //连接失败
+                        connectFailUI();
+
+                    }
+                });
 
                 try {
                     bluetoothSocket.close();
                 } catch (IOException e1) {
+                    //一般不会有的异常
                     Log.e("BluetoothTest", "unable to close() "+
                             "socket during connection failure", e1);
                 }
@@ -746,6 +847,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             try {
                 outPutStream = bluetoothSocket.getOutputStream();
             } catch (IOException e) {
+                //一般不会有的异常
                 Log.e("BluetoothTest","socket getOutputStream()时 IOException:"+e);
 
             }
@@ -773,8 +875,24 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                         try {
                             //     outPutStream.write(sendBuffer,0,10);
                             outPutStream.write(s.getBytes());
+                            Log.e("BluetoothTest","发送:" +s);
                         } catch (IOException e) {
+
+                            //连接中断
+                            isConnected=false;
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    connectionLoseUI();
+
+                                }
+                            });
+
+
                             Log.e("BluetoothTest","socket send时 IOException:"+e);
+
                         }
 
 
@@ -808,6 +926,19 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 str.trim();
                 Log.e("BluetoothTest","recv成功，内容："+str);
             } catch (IOException e) {
+
+                //连接中断
+                isConnected=false;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        connectionLoseUI();
+
+                    }
+                });
+
+
                 Log.e("BluetoothTest","socket recv时 IOException:"+e);
             }
 

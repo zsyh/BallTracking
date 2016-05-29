@@ -12,14 +12,14 @@
         opencv:show_fps="true"
         opencv:camera_id="any" />
 
-   <LinearLayout
+    <LinearLayout
        android:id="@+id/linearLayout"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
        android:layout_marginTop="15dp"
        android:orientation="vertical">
 
-   </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -44,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="设定PID"
+            android:enabled="false"
              />
 
         <Button
@@ -51,6 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="数据传输控制"
+            android:enabled="false"
              />
     </LinearLayout>
 
