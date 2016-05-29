@@ -957,7 +957,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                             }
 
                             textViewInformation.setText(strAll);
-                            if(queueI==4)
+                            if(queueI>=4)
                             {
                                 queue.poll();
                                 queueI--;
@@ -1153,7 +1153,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                         position=(modifiedx-leftLeadRail.x)/(rightLeadRail.x-leftLeadRail.x);
                     }
 
-                    
+
                     position*=600;//转换成毫米
                     textViewPosition.setText("位置:" + position);
                     //Log.e("HelloOpenCV","位置:" + position);
