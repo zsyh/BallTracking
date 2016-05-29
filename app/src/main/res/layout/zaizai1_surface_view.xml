@@ -93,5 +93,20 @@
             android:text="位置:" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+        <TextView
+            android:id="@+id/textViewInformation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFF00"
+            android:textSize="10dp"
+            android:text=""
+            />
+    </LinearLayout>
+
 
 </RelativeLayout>

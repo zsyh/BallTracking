@@ -44,7 +44,10 @@ package com.zaizai1.balltracking;
         import java.io.InputStream;
         import java.io.InputStreamReader;
         import java.io.OutputStream;
+        import java.text.SimpleDateFormat;
+        import java.util.Queue;
         import java.util.UUID;
+        import java.util.concurrent.LinkedBlockingQueue;
         import java.util.regex.Pattern;
 
 public class MainActivity extends Activity implements CvCameraViewListener2, View.OnTouchListener {
@@ -80,7 +83,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private Rect ballTrackZone = new Rect();
 
     //主界面
-    private TextView textViewLeft,textViewRight,textViewBall,textViewPosition;
+    private TextView textViewLeft,textViewRight,textViewBall,textViewPosition,textViewInformation;
     private Button buttonSetRange,buttonBlueToothConnect,buttonSetPID,buttonDataTransControl;
     //SetRange
     private RadioGroup radioGroup;
@@ -301,7 +304,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         textViewRight=(TextView)findViewById(R.id.textViewRight);
         textViewBall=(TextView)findViewById(R.id.textViewBall);
         textViewPosition=(TextView)findViewById(R.id.textViewPosition);
-
+        textViewInformation=(TextView)findViewById(R.id.textViewInformation);
 
         buttonSetRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -906,6 +909,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         }
     }
 
+
+
+    Queue<String> queue = new LinkedBlockingQueue<>();
+
+
     class RecvThread extends Thread{
         @Override
         public void run() {
@@ -921,10 +929,49 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
 
             try {
-                String str=bufferedReader.readLine();
-                //str!=null才有效！
-                str.trim();
-                Log.e("BluetoothTest","recv成功，内容："+str);
+                String str;
+                while((str=bufferedReader.readLine())!=null)
+                {
+                    Log.e("BluetoothTest","recv成功，内容："+str);
+                    //str!=null才有效！
+                    str=str.trim();
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+                    String time = sdf.format(new java.util.Date());
+
+                    str=time+" "+str+'\n';
+                    queue.offer(str);
+
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            int queueI=0;
+                            String strAll="";
+                            for(String x :queue)
+                            {
+                                queueI++;
+                                strAll+=x;
+                            }
+
+                            textViewInformation.setText(strAll);
+                            if(queueI==4)
+                            {
+                                queue.poll();
+                                queueI--;
+                            }
+
+                        }
+                    });
+
+
+
+
+
+                }
+
             } catch (IOException e) {
 
                 //连接中断
