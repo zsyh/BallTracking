@@ -24,6 +24,7 @@ package com.zaizai1.balltracking;
         import android.os.Looper;
         import android.os.Message;
         import android.util.Log;
+        import android.view.KeyEvent;
         import android.view.LayoutInflater;
         import android.view.MenuItem;
         import android.view.MotionEvent;
@@ -141,6 +142,23 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     public MainActivity() {
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
+
+
+    private long mExitTime;
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                mExitTime = System.currentTimeMillis();
+
+            } else {
+                finish();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 
     @Override
