@@ -1133,13 +1133,27 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
 
                 if(isLeftSelected && isRightSelected && isBallSelected){
-                    double leftToBally=ball.y-leftLeadRail.y;
-                    double leftToRightx=rightLeadRail.x-leftLeadRail.x;
-                    double leftToRighty=rightLeadRail.y-leftLeadRail.y;
-                    double k = leftToRighty/leftToRightx;
-                    double k_1 = leftToRightx/leftToRighty;
-                    double modifiedx=(leftToBally+ k_1 * ball.x + k *leftLeadRail.x)/(k + k_1);
-                    double position=(modifiedx-leftLeadRail.x)/(rightLeadRail.x-leftLeadRail.x);
+                    double leftToBally;
+                    double leftToRightx;
+                    double leftToRighty;
+                    double k;
+                    double k_1;
+                    double modifiedx;
+                    double position;
+                    if(rightLeadRail.y-leftLeadRail.y==0) {
+                        position=(ball.x-leftLeadRail.x)/(rightLeadRail.x-leftLeadRail.x);
+                    }
+                    else{
+                        leftToBally=ball.y-leftLeadRail.y;
+                        leftToRightx=rightLeadRail.x-leftLeadRail.x;
+                        leftToRighty=rightLeadRail.y-leftLeadRail.y;
+                        k= leftToRighty/leftToRightx;
+                        k_1 = leftToRightx/leftToRighty;
+                        modifiedx=(leftToBally+ k_1 * ball.x + k *leftLeadRail.x)/(k + k_1);
+                        position=(modifiedx-leftLeadRail.x)/(rightLeadRail.x-leftLeadRail.x);
+                    }
+
+                    
                     position*=600;//转换成毫米
                     textViewPosition.setText("位置:" + position);
                     //Log.e("HelloOpenCV","位置:" + position);
