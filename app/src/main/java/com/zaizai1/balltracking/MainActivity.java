@@ -1048,6 +1048,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
     }
 
+    private int mod = 0;
+
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
 
         mRgba=inputFrame.rgba();//mRgba是给回调函数onTouch传递数据的全局变量
@@ -1158,7 +1160,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     textViewPosition.setText("位置:" + position);
                     //Log.e("HelloOpenCV","位置:" + position);
 
-                    if(isConnected && isPositionSending) {
+                    mod++;
+                    if(mod > 3) mod=1;
+                    if(isConnected && isPositionSending && mod %3==0) {
+
+
                         String text = Integer.toString((int) position);
 
                         Message msg = sendHandler.obtainMessage();
