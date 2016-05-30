@@ -956,6 +956,16 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 Log.e("BluetoothTest", "connecting IOException:"+ e);
 
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+                String time = sdf.format(new java.util.Date());
+                String str=time + " bluetooth:" + "蓝牙连接失败" + '\n';
+                queue.offer(str);
+
+                //更新信息条
+                runOnUiThread(new UpdateInformationBarRunnable());
+
+
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1028,6 +1038,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                             //连接中断
                             isConnected=false;
 
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+                            String time = sdf.format(new java.util.Date());
+                            String str=time + " bluetooth:" + "蓝牙发送错误 服务器断开连接" + '\n';
+                            queue.offer(str);
+
+                            //更新信息条
+                            runOnUiThread(new UpdateInformationBarRunnable());
+
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -1083,35 +1101,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
                     String time = sdf.format(new java.util.Date());
 
-                    str=time+" "+str+'\n';
+                    str=time+" recv:"+str+'\n';
                     queue.offer(str);
 
-
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            int queueI=0;
-                            String strAll="";
-                            for(String x :queue)
-                            {
-                                queueI++;
-                                strAll+=x;
-                            }
-
-                            textViewInformation.setText(strAll);
-                            if(queueI>=4)
-                            {
-                                queue.poll();
-                                queueI--;
-                            }
-
-                        }
-                    });
-
-
-
+                    runOnUiThread(new UpdateInformationBarRunnable());//更新信息条
 
 
                 }
@@ -1120,6 +1113,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 //连接中断
                 isConnected=false;
+
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+                String time = sdf.format(new java.util.Date());
+                String str=time + " bluetooth:" + "蓝牙连接丢失" + '\n';
+                queue.offer(str);
+
+                //更新信息条
+                runOnUiThread(new UpdateInformationBarRunnable());
+
+                //更新UI
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1136,6 +1140,31 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         }
     }
+
+    class UpdateInformationBarRunnable implements Runnable {
+
+        @Override
+        public void run() {
+
+
+            int queueI=0;
+            String strAll="";
+            for(String x :queue)
+            {
+                queueI++;
+                strAll+=x;
+            }
+
+            textViewInformation.setText(strAll);
+            if(queueI>=6)
+            {
+                queue.poll();
+                queueI--;
+            }
+
+        }
+    }
+
 
 
     @Override
