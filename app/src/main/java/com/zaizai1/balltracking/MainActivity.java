@@ -428,7 +428,19 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
         });
 
-        buttonSetRangeReturn.setOnClickListener(returnOnClickListener);
+        buttonSetRangeReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                linearLayout.removeAllViews();
+                buttonSetRange.setVisibility(View.VISIBLE);
+                buttonBlueToothConnect.setVisibility(View.VISIBLE);
+                buttonSetPID.setVisibility(View.VISIBLE);
+                buttonDataTransControl.setVisibility(View.VISIBLE);
+                radioButtonDoNothing.setChecked(true);
+
+            }
+        });
 
 
 
