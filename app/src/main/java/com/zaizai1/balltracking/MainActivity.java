@@ -19,6 +19,7 @@ package com.zaizai1.balltracking;
         import android.bluetooth.BluetoothAdapter;
         import android.bluetooth.BluetoothDevice;
         import android.bluetooth.BluetoothSocket;
+        import android.content.SharedPreferences;
         import android.os.Bundle;
         import android.os.Handler;
         import android.os.Looper;
@@ -92,6 +93,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private RadioGroup radioGroup;
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
     private CheckBox checkBoxPickColor;
+    private TextView textViewH,textViewS,textViewV;
     private Button buttonSetRangeReturn;
     //setPID
     private EditText editTextP,editTextI,editTextD,editTextIThreshold;
@@ -222,7 +224,25 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 Log.e(TAG, "left Touched HSV color: (" + mBlobColorHsvLeft.val[0] + ", " + mBlobColorHsvLeft.val[1] +
                         ", " + mBlobColorHsvLeft.val[2] + ", " + mBlobColorHsvLeft.val[3] + ")");
+
+                //把成功选定的颜色写入文件,并显示在相应文本框
+                SharedPreferences user = getSharedPreferences("HSV_info",0);
+                SharedPreferences.Editor editor=user.edit();
+                String Htemp= String.format(Double.toString(mBlobColorHsvLeft.val[0]), "%.2f");
+                String Stemp=String.format(Double.toString(mBlobColorHsvLeft.val[1]), "%.2f");
+                String Vtemp=String.format(Double.toString(mBlobColorHsvLeft.val[2]), "%.2f");
+
+                editor.putString("leftH",Htemp );
+                editor.putString("leftS",Stemp );
+                editor.putString("leftV",Vtemp );
+                editor.commit();
+
+                textViewH.setText(Htemp);
+                textViewS.setText(Stemp);
+                textViewV.setText(Vtemp);
+
             }
+
             leftLeadRail.x=x;
             leftLeadRail.y=y;
             isLeftSelected=true;
@@ -239,7 +259,27 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 Log.e(TAG, "right Touched HSV color: (" + mBlobColorHsvRight.val[0] + ", " + mBlobColorHsvRight.val[1] +
                         ", " + mBlobColorHsvRight.val[2] + ", " + mBlobColorHsvRight.val[3] + ")");
+
+                //把成功选定的颜色写入文件,并显示在相应文本框
+                SharedPreferences user = getSharedPreferences("HSV_info",0);
+                SharedPreferences.Editor editor=user.edit();
+                String Htemp= String.format(Double.toString(mBlobColorHsvRight.val[0]), "%.2f");
+                String Stemp=String.format(Double.toString(mBlobColorHsvRight.val[1]), "%.2f");
+                String Vtemp=String.format(Double.toString(mBlobColorHsvRight.val[2]), "%.2f");
+                
+
+                editor.putString("rightH",Htemp );
+                editor.putString("rightS",Stemp );
+                editor.putString("rightV",Vtemp );
+                editor.commit();
+
+                textViewH.setText(Htemp);
+                textViewS.setText(Stemp);
+                textViewV.setText(Vtemp);
+
             }
+
+
             rightLeadRail.x=x;
             rightLeadRail.y=y;
             isRightSelected=true;
@@ -255,7 +295,27 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 Log.e(TAG, "ball Touched HSV color: (" + mBlobColorHsvBall.val[0] + ", " + mBlobColorHsvBall.val[1] +
                         ", " + mBlobColorHsvBall.val[2] + ", " + mBlobColorHsvBall.val[3] + ")");
+
+                //把成功选定的颜色写入文件,并显示在相应文本框
+                SharedPreferences user = getSharedPreferences("HSV_info",0);
+                SharedPreferences.Editor editor=user.edit();
+                String Htemp= String.format(Double.toString(mBlobColorHsvBall.val[0]), "%.2f");
+                String Stemp=String.format(Double.toString(mBlobColorHsvBall.val[1]), "%.2f");
+                String Vtemp=String.format(Double.toString(mBlobColorHsvBall.val[2]), "%.2f");
+
+                editor.putString("ballH",Htemp );
+                editor.putString("ballS",Stemp );
+                editor.putString("ballV",Vtemp );
+                editor.commit();
+
+                textViewH.setText(Htemp);
+                textViewS.setText(Stemp);
+                textViewV.setText(Vtemp);
+
+
             }
+
+
             ball.x=x;
             ball.y=y;
             isBallSelected=true;
@@ -427,6 +487,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         radioButtonBall=(RadioButton)viewSetRange.findViewById(R.id.radioButtonBall);
         checkBoxPickColor=(CheckBox)viewSetRange.findViewById(R.id.checkBoxPickColor);
         buttonSetRangeReturn=(Button) viewSetRange.findViewById(R.id.buttonSetRangeReturn);
+        textViewH=(TextView) viewSetRange.findViewById(R.id.textViewH);
+        textViewS=(TextView) viewSetRange.findViewById(R.id.textViewS);
+        textViewV=(TextView) viewSetRange.findViewById(R.id.textViewV);
 
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -438,12 +501,44 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                 else if(checkedId==radioButtonLeft.getId()){
                     touchMode=TOUCH_LEFT;
+                    //从文件中读取HSV
+                    SharedPreferences sp = getSharedPreferences("HSV_info",0);
+                    String Htemp = sp.getString("leftH","");
+                    String Stemp = sp.getString("leftS","");
+                    String Vtemp = sp.getString("leftV","");
+
+                    textViewH.setText(Htemp);
+                    textViewS.setText(Stemp);
+                    textViewV.setText(Vtemp);
+
+
+
                 }
                 else if(checkedId==radioButtonRight.getId()){
                     touchMode=TOUCH_RIGHT;
+                    //从文件中读取HSV
+                    SharedPreferences sp = getSharedPreferences("HSV_info",0);
+                    String Htemp = sp.getString("rightH","");
+                    String Stemp = sp.getString("rightS","");
+                    String Vtemp = sp.getString("rightV","");
+
+                    textViewH.setText(Htemp);
+                    textViewS.setText(Stemp);
+                    textViewV.setText(Vtemp);
+
                 }
                 else if(checkedId==radioButtonBall.getId()){
                     touchMode=TOUCH_BALL;
+                    //从文件中读取HSV
+                    SharedPreferences sp = getSharedPreferences("HSV_info",0);
+                    String Htemp = sp.getString("ballH","");
+                    String Stemp = sp.getString("ballS","");
+                    String Vtemp = sp.getString("ballV","");
+
+                    textViewH.setText(Htemp);
+                    textViewS.setText(Stemp);
+                    textViewV.setText(Vtemp);
+
                 }
                 else
                 {
