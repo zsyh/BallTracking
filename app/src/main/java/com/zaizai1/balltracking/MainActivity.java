@@ -32,6 +32,8 @@ package com.zaizai1.balltracking;
         import android.view.View;
         import android.view.WindowManager;
         import android.widget.Button;
+        import android.widget.CheckBox;
+        import android.widget.CompoundButton;
         import android.widget.EditText;
         import android.widget.LinearLayout;
         import android.widget.RadioButton;
@@ -49,6 +51,7 @@ package com.zaizai1.balltracking;
         import java.util.UUID;
         import java.util.concurrent.LinkedBlockingQueue;
         import java.util.regex.Pattern;
+        import java.util.zip.CheckedInputStream;
 
 public class MainActivity extends Activity implements CvCameraViewListener2, View.OnTouchListener {
     private static final String TAG = "OCVSample::Activity";
@@ -88,6 +91,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     //SetRange
     private RadioGroup radioGroup;
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
+    private CheckBox checkBoxPickColor;
     private Button buttonSetRangeReturn;
     //setPID
     private EditText editTextP,editTextI,editTextD,editTextIThreshold;
@@ -110,9 +114,12 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private boolean isLeftSelected =false;
     private boolean isRightSelected =false;
     private boolean isBallSelected =false;
+    private boolean isPickColor=true;
+
     private boolean leftTouchLock=false;
     private boolean rightTouchLock=false;
     private boolean ballTouchLock=false;
+
 
     private static final int TOUCH_DONOTHING=0;
     private static final int TOUCH_LEFT=1;
@@ -169,6 +176,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         if(touchMode==TOUCH_DONOTHING) return false;
 
+
         int cols = mRgba.cols();
         int rows = mRgba.rows();
 
@@ -180,34 +188,41 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         Log.e(TAG, "Touch image coordinates: (" + x + ", " + y + ")");
 
+
         if ((x < 0) || (y < 0) || (x > cols) || (y > rows)) return false;
 
-        Rect touchedRect = new Rect();
 
-        touchedRect.x = (x>4) ? x-4 : 0;
-        touchedRect.y = (y>4) ? y-4 : 0;
 
-        touchedRect.width = (x+4 < cols) ? x + 4 - touchedRect.x : cols - touchedRect.x;
-        touchedRect.height = (y+4 < rows) ? y + 4 - touchedRect.y : rows - touchedRect.y;
-
-        Mat touchedRegionRgba = mRgba.submat(touchedRect);
-
+        Rect  touchedRect = new Rect();
+        Mat touchedRegionRgba;//这个不能在此直接初始化,大坑
         Mat touchedRegionHsv = new Mat();
-        Imgproc.cvtColor(touchedRegionRgba, touchedRegionHsv, Imgproc.COLOR_RGB2HSV_FULL);
+        if(isPickColor) {
 
+            touchedRect.x = (x > 4) ? x - 4 : 0;
+            touchedRect.y = (y > 4) ? y - 4 : 0;
+
+            touchedRect.width = (x + 4 < cols) ? x + 4 - touchedRect.x : cols - touchedRect.x;
+            touchedRect.height = (y + 4 < rows) ? y + 4 - touchedRect.y : rows - touchedRect.y;
+
+            touchedRegionRgba = mRgba.submat(touchedRect);
+
+
+            Imgproc.cvtColor(touchedRegionRgba, touchedRegionHsv, Imgproc.COLOR_RGB2HSV_FULL);
+        }
 
 
         if(touchMode==TOUCH_LEFT){
 
-            // Calculate average color of touched region
-            mBlobColorHsvLeft = Core.sumElems(touchedRegionHsv);
-            int pointCount = touchedRect.width*touchedRect.height;
-            for (int i = 0; i < mBlobColorHsvLeft.val.length; i++)
-                mBlobColorHsvLeft.val[i] /= pointCount;
+            if(isPickColor) {
+                // Calculate average color of touched region
+                mBlobColorHsvLeft = Core.sumElems(touchedRegionHsv);
+                int pointCount = touchedRect.width * touchedRect.height;
+                for (int i = 0; i < mBlobColorHsvLeft.val.length; i++)
+                    mBlobColorHsvLeft.val[i] /= pointCount;
 
-            Log.e(TAG, "left Touched HSV color: (" + mBlobColorHsvLeft.val[0] + ", " + mBlobColorHsvLeft.val[1] +
-                    ", " + mBlobColorHsvLeft.val[2] + ", " + mBlobColorHsvLeft.val[3] + ")");
-
+                Log.e(TAG, "left Touched HSV color: (" + mBlobColorHsvLeft.val[0] + ", " + mBlobColorHsvLeft.val[1] +
+                        ", " + mBlobColorHsvLeft.val[2] + ", " + mBlobColorHsvLeft.val[3] + ")");
+            }
             leftLeadRail.x=x;
             leftLeadRail.y=y;
             isLeftSelected=true;
@@ -215,28 +230,32 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         }
         else if (touchMode==TOUCH_RIGHT){
-            // Calculate average color of touched region
-            mBlobColorHsvRight = Core.sumElems(touchedRegionHsv);
-            int pointCount = touchedRect.width*touchedRect.height;
-            for (int i = 0; i < mBlobColorHsvRight.val.length; i++)
-                mBlobColorHsvRight.val[i] /= pointCount;
+            if(isPickColor) {
+                // Calculate average color of touched region
+                mBlobColorHsvRight = Core.sumElems(touchedRegionHsv);
+                int pointCount = touchedRect.width * touchedRect.height;
+                for (int i = 0; i < mBlobColorHsvRight.val.length; i++)
+                    mBlobColorHsvRight.val[i] /= pointCount;
 
-            Log.e(TAG, "right Touched HSV color: (" + mBlobColorHsvRight.val[0] + ", " + mBlobColorHsvRight.val[1] +
-                    ", " + mBlobColorHsvRight.val[2] + ", " + mBlobColorHsvRight.val[3] + ")");
+                Log.e(TAG, "right Touched HSV color: (" + mBlobColorHsvRight.val[0] + ", " + mBlobColorHsvRight.val[1] +
+                        ", " + mBlobColorHsvRight.val[2] + ", " + mBlobColorHsvRight.val[3] + ")");
+            }
             rightLeadRail.x=x;
             rightLeadRail.y=y;
             isRightSelected=true;
             rightTouchLock=true;
         }
         else if (touchMode==TOUCH_BALL) {
-            // Calculate average color of touched region
-            mBlobColorHsvBall = Core.sumElems(touchedRegionHsv);
-            int pointCount = touchedRect.width*touchedRect.height;
-            for (int i = 0; i < mBlobColorHsvBall.val.length; i++)
-                mBlobColorHsvBall.val[i] /= pointCount;
+            if(isPickColor) {
+                // Calculate average color of touched region
+                mBlobColorHsvBall = Core.sumElems(touchedRegionHsv);
+                int pointCount = touchedRect.width * touchedRect.height;
+                for (int i = 0; i < mBlobColorHsvBall.val.length; i++)
+                    mBlobColorHsvBall.val[i] /= pointCount;
 
-            Log.e(TAG, "ball Touched HSV color: (" + mBlobColorHsvBall.val[0] + ", " + mBlobColorHsvBall.val[1] +
-                    ", " + mBlobColorHsvBall.val[2] + ", " + mBlobColorHsvBall.val[3] + ")");
+                Log.e(TAG, "ball Touched HSV color: (" + mBlobColorHsvBall.val[0] + ", " + mBlobColorHsvBall.val[1] +
+                        ", " + mBlobColorHsvBall.val[2] + ", " + mBlobColorHsvBall.val[3] + ")");
+            }
             ball.x=x;
             ball.y=y;
             isBallSelected=true;
@@ -244,6 +263,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         }
 
 
+        if( isBallSelected && isLeftSelected && isRightSelected){
+
+            checkBoxPickColor.setEnabled(true);
+        }
 
         isSelected=true;
 
@@ -402,6 +425,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         radioButtonLeft=(RadioButton)viewSetRange.findViewById(R.id.radioButtonLeft);
         radioButtonRight=(RadioButton)viewSetRange.findViewById(R.id.radioButtonRight);
         radioButtonBall=(RadioButton)viewSetRange.findViewById(R.id.radioButtonBall);
+        checkBoxPickColor=(CheckBox)viewSetRange.findViewById(R.id.checkBoxPickColor);
         buttonSetRangeReturn=(Button) viewSetRange.findViewById(R.id.buttonSetRangeReturn);
 
 
@@ -428,6 +452,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
         });
 
+
+        checkBoxPickColor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                isPickColor=isChecked;
+
+            }
+        });
+
+
         buttonSetRangeReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -441,6 +476,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
             }
         });
+
+
 
 
 

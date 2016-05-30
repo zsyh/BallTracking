@@ -32,10 +32,20 @@
             android:layout_height="wrap_content"
             android:text="小球" />
     </RadioGroup>
+
+
+    <CheckBox
+        android:id="@+id/checkBoxPickColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="拾取颜色"
+        android:enabled="false"
+        android:checked="true"/>
     <Button
         android:id="@+id/buttonSetRangeReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="返回" />
+
 
 </LinearLayout>
