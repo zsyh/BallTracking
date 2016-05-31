@@ -593,6 +593,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextP.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -616,6 +620,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextI.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -639,6 +647,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextD.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -662,6 +674,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextIThreshold.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -723,6 +739,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextTargetPosition.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -746,6 +766,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextStep.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
@@ -770,6 +794,10 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onClick(View v) {
 
                 String text = editTextStep.getText().toString();
+                if(text==""){
+                    Toast.makeText(getApplicationContext(),"发送中止：输入为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Pattern pattern = Pattern.compile("[0-9]*");
                 if(!pattern.matcher(text).matches()){//判断是否为数字
 
