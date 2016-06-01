@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
     private CheckBox checkBoxPickColor;
     private TextView textViewH,textViewS,textViewV;
-    private Button buttonSetRangeReturn;
+    private Button buttonSetRangeReturn,buttonUseLastHSV;
     //setPID
     private EditText editTextP,editTextI,editTextD,editTextIThreshold;
     private Button buttonSendP,buttonSendI,buttonSendD,buttonSendIThreshold,buttonSetPIDReturn;
@@ -486,6 +486,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         radioButtonRight=(RadioButton)viewSetRange.findViewById(R.id.radioButtonRight);
         radioButtonBall=(RadioButton)viewSetRange.findViewById(R.id.radioButtonBall);
         checkBoxPickColor=(CheckBox)viewSetRange.findViewById(R.id.checkBoxPickColor);
+        buttonUseLastHSV=(Button)viewSetRange.findViewById(R.id.buttonUseLastHSV);
         buttonSetRangeReturn=(Button) viewSetRange.findViewById(R.id.buttonSetRangeReturn);
         textViewH=(TextView) viewSetRange.findViewById(R.id.textViewH);
         textViewS=(TextView) viewSetRange.findViewById(R.id.textViewS);
@@ -497,6 +498,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if(checkedId==radioButtonDoNothing.getId()) {
                     touchMode=TOUCH_DONOTHING;
+                    buttonUseLastHSV.setVisibility(View.INVISIBLE);
                 }
 
                 else if(checkedId==radioButtonLeft.getId()){
@@ -511,6 +513,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     textViewS.setText(Stemp);
                     textViewV.setText(Vtemp);
 
+                    if(isLeftSelected) {
+                        buttonUseLastHSV.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                    {
+                        if(!(Htemp.equals("") && Stemp.equals("") && Htemp.equals("")))
+                            buttonUseLastHSV.setVisibility(View.VISIBLE);
+                    }
 
 
                 }
@@ -526,6 +536,14 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     textViewS.setText(Stemp);
                     textViewV.setText(Vtemp);
 
+                    if(isRightSelected) {
+                        buttonUseLastHSV.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                    {
+                        if(!(Htemp.equals("") && Stemp.equals("") && Htemp.equals("")))
+                        buttonUseLastHSV.setVisibility(View.VISIBLE);
+                    }
                 }
                 else if(checkedId==radioButtonBall.getId()){
                     touchMode=TOUCH_BALL;
@@ -538,6 +556,15 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     textViewH.setText(Htemp);
                     textViewS.setText(Stemp);
                     textViewV.setText(Vtemp);
+
+                    if(isBallSelected) {
+                        buttonUseLastHSV.setVisibility(View.INVISIBLE);
+                    }
+                    else
+                    {
+                        if(!(Htemp.equals("") && Stemp.equals("") && Htemp.equals("")))
+                        buttonUseLastHSV.setVisibility(View.VISIBLE);
+                    }
 
                 }
                 else
@@ -557,6 +584,54 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
         });
 
+        buttonUseLastHSV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+
+                if(touchMode==TOUCH_LEFT){
+                    mBlobColorHsvLeft=new Scalar(
+                            Double.parseDouble(textViewH.getText().toString()),
+                            Double.parseDouble(textViewS.getText().toString()),
+                            Double.parseDouble(textViewV.getText().toString()));
+                    leftLeadRail.x=200;
+                    leftLeadRail.y=200;
+                    isLeftSelected=true;
+                    isSelected=true;
+
+                }
+                else if(touchMode==TOUCH_RIGHT){
+                    mBlobColorHsvRight=new Scalar(
+                            Double.parseDouble(textViewH.getText().toString()),
+                            Double.parseDouble(textViewS.getText().toString()),
+                            Double.parseDouble(textViewV.getText().toString()));
+                    rightLeadRail.x=400;
+                    rightLeadRail.y=200;
+                    isRightSelected=true;
+                    isSelected=true;
+
+                }
+                else if(touchMode==TOUCH_BALL){
+                    mBlobColorHsvBall=new Scalar(
+                            Double.parseDouble(textViewH.getText().toString()),
+                            Double.parseDouble(textViewS.getText().toString()),
+                            Double.parseDouble(textViewV.getText().toString()));
+                    ball.x=300;
+                    ball.y=200;
+                    isBallSelected=true;
+                    isSelected=true;
+
+                }
+                else
+                {
+                    return;
+                }
+                checkBoxPickColor.setChecked(false);
+                buttonUseLastHSV.setVisibility(View.INVISIBLE);
+
+            }
+        });
 
         buttonSetRangeReturn.setOnClickListener(new View.OnClickListener() {
             @Override
