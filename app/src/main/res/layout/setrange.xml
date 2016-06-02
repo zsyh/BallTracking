@@ -66,12 +66,19 @@
         android:textSize="10dp"
         android:text=""
         />
-
     <Button
         android:id="@+id/buttonSetRangeReturn"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="返回" />
+    <Button
+        android:id="@+id/buttonUseLastHSV"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="应用上次颜色"
+        android:visibility="invisible"/>
+
+
 
 
 </LinearLayout>
