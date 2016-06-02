@@ -64,6 +64,30 @@
         android:layout_toRightOf="@id/buttonClear"
         android:text="反转"/>
 
+    <EditText
+        android:id="@+id/editTextInstruction"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:hint="指令"
+        android:layout_below="@id/buttonClear"
+
+        />
+
+    <EditText
+        android:id="@+id/editTextData"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:hint="数据"
+        android:layout_below="@id/editTextInstruction"
+        />
+    <Button
+        android:id="@+id/buttonEmergencySend"
+        android:layout_width="50dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/buttonReverse"
+        android:layout_toRightOf="@id/editTextInstruction"
+        android:text="应急发送" />
+
 </RelativeLayout>
 
     <Button
