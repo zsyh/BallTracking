@@ -241,6 +241,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 textViewS.setText(Stemp);
                 textViewV.setText(Vtemp);
 
+                buttonUseLastHSV.setVisibility(View.INVISIBLE);
             }
 
             leftLeadRail.x=x;
@@ -276,6 +277,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 textViewH.setText(Htemp);
                 textViewS.setText(Stemp);
                 textViewV.setText(Vtemp);
+                buttonUseLastHSV.setVisibility(View.INVISIBLE);
 
             }
 
@@ -311,7 +313,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 textViewH.setText(Htemp);
                 textViewS.setText(Stemp);
                 textViewV.setText(Vtemp);
-
+                buttonUseLastHSV.setVisibility(View.INVISIBLE);
 
             }
 
