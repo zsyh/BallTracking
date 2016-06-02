@@ -91,6 +91,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     //主界面
     private TextView textViewLeft,textViewRight,textViewBall,textViewPosition,textViewInformation;
     private Button buttonSetRange,buttonBlueToothConnect,buttonSetPID,buttonDataTransControl;
+    private CheckBox checkBoxWideAngleErrorFix;
     //SetRange
     private RadioGroup radioGroup;
     private RadioButton radioButtonDoNothing,radioButtonLeft,radioButtonRight,radioButtonBall;
@@ -394,6 +395,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         textViewBall=(TextView)findViewById(R.id.textViewBall);
         textViewPosition=(TextView)findViewById(R.id.textViewPosition);
         textViewInformation=(TextView)findViewById(R.id.textViewInformation);
+        checkBoxWideAngleErrorFix=(CheckBox)findViewById(R.id.checkBoxWideAngleErrorFix);
 
         buttonSetRange.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -405,6 +407,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 buttonBlueToothConnect.setVisibility(View.INVISIBLE);
                 buttonSetPID.setVisibility(View.INVISIBLE);
                 buttonDataTransControl.setVisibility(View.INVISIBLE);
+                checkBoxWideAngleErrorFix.setVisibility(View.INVISIBLE);
 
             }
         });
@@ -419,6 +422,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 buttonBlueToothConnect.setVisibility(View.INVISIBLE);
                 buttonSetPID.setVisibility(View.INVISIBLE);
                 buttonDataTransControl.setVisibility(View.INVISIBLE);
+                checkBoxWideAngleErrorFix.setVisibility(View.INVISIBLE);
 
             }
         });
@@ -433,6 +437,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 buttonBlueToothConnect.setVisibility(View.INVISIBLE);
                 buttonSetPID.setVisibility(View.INVISIBLE);
                 buttonDataTransControl.setVisibility(View.INVISIBLE);
+                checkBoxWideAngleErrorFix.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -648,6 +653,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                 buttonBlueToothConnect.setVisibility(View.VISIBLE);
                 buttonSetPID.setVisibility(View.VISIBLE);
                 buttonDataTransControl.setVisibility(View.VISIBLE);
+                checkBoxWideAngleErrorFix.setVisibility(View.VISIBLE);
                 radioButtonDoNothing.setChecked(true);
 
             }
@@ -1060,6 +1066,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             buttonBlueToothConnect.setVisibility(View.VISIBLE);
             buttonSetPID.setVisibility(View.VISIBLE);
             buttonDataTransControl.setVisibility(View.VISIBLE);
+            checkBoxWideAngleErrorFix.setVisibility(View.VISIBLE);
 
         }
     }
@@ -1492,19 +1499,27 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                     position*=600;//转换成毫米
 
-                    if(position<leftEdgePosition || position > rightEdgePosition){
+                    double correctedPosition;
+                    if(checkBoxWideAngleErrorFix.isChecked()){
+                        correctedPosition=576/564*(position-16)+10;
+                    }
+                    else
+                    {
+                        correctedPosition=position;
+                    }
+
+                    if(correctedPosition<leftEdgePosition || correctedPosition > rightEdgePosition){
                         playSound(R.raw.reachedge);
                     }
                     
-                    textViewPosition.setText("位置:" + position);
-                    //Log.e("HelloOpenCV","位置:" + position);
+                    textViewPosition.setText("位置:" + correctedPosition);
 
                     mod++;
                     if(mod > 3) mod=1;
                     if(isConnected && isPositionSending && mod %3==0) {
 
 
-                        String text = Integer.toString((int) position);
+                        String text = Integer.toString((int) correctedPosition);
 
                         Message msg = sendHandler.obtainMessage();
                         msg.what = 1;
