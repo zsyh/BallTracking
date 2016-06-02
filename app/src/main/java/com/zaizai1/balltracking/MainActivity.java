@@ -20,6 +20,7 @@ package com.zaizai1.balltracking;
         import android.bluetooth.BluetoothDevice;
         import android.bluetooth.BluetoothSocket;
         import android.content.SharedPreferences;
+        import android.media.MediaPlayer;
         import android.os.Bundle;
         import android.os.Handler;
         import android.os.Looper;
@@ -37,6 +38,7 @@ package com.zaizai1.balltracking;
         import android.widget.CompoundButton;
         import android.widget.EditText;
         import android.widget.LinearLayout;
+        import android.widget.MediaController;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
         import android.widget.TextView;
@@ -112,6 +114,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private Handler sendHandler;
     private Handler recvHandler;
 
+    private MediaPlayer mediaPlayer;
+    
     private boolean isSelected = false;
     private boolean isLeftSelected =false;
     private boolean isRightSelected =false;
@@ -1326,6 +1330,26 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
     }
 
+    private void playSound(int resid){
+        if(mediaPlayer!=null){
+            if(!mediaPlayer.isPlaying()) {
+                mediaPlayer.release();
+                //高通处理器不支持mediaPlayer=new MediaPlayer();
+                mediaPlayer=MediaPlayer.create(MainActivity.this,resid);
+
+                mediaPlayer.start();
+
+            }
+        }
+        else
+        {
+            mediaPlayer=MediaPlayer.create(MainActivity.this,resid);
+
+            mediaPlayer.start();
+        }
+    }
+
+
     private int mod = 0;
 
     public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
@@ -1550,6 +1574,9 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         }
         else {
             Log.e("HelloOpenCV","自动跟踪错误,m00==0 , mode:" + mode);
+
+            playSound(R.raw.tracklose);
+
         }
 
 
