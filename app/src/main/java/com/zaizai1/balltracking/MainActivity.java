@@ -1459,6 +1459,11 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
 
                     position*=600;//转换成毫米
+
+                    if(position<leftEdgePosition || position > rightEdgePosition){
+                        playSound(R.raw.reachedge);
+                    }
+                    
                     textViewPosition.setText("位置:" + position);
                     //Log.e("HelloOpenCV","位置:" + position);
 
@@ -1466,9 +1471,6 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     if(mod > 3) mod=1;
                     if(isConnected && isPositionSending && mod %3==0) {
 
-                        if(position<leftEdgePosition || position > rightEdgePosition){
-                            playSound(R.raw.reachedge);
-                        }
 
                         String text = Integer.toString((int) position);
 
