@@ -101,8 +101,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private EditText editTextP,editTextI,editTextD,editTextIThreshold;
     private Button buttonSendP,buttonSendI,buttonSendD,buttonSendIThreshold,buttonSetPIDReturn;
     //dataTransControl
-    private EditText editTextTargetPosition,editTextStep;
-    private Button buttonStartSendPosition,buttonStopSendPosition,buttonSetTargetPosition,buttonForeward,buttonClear,buttonReverse,buttonDataTransControlReturn;
+    private EditText editTextTargetPosition,editTextStep,editTextInstruction,editTextData;
+    private Button buttonStartSendPosition,buttonStopSendPosition,buttonSetTargetPosition,buttonForeward,buttonClear,buttonReverse,buttonEmergencySend,buttonDataTransControlReturn;
 
     private BluetoothAdapter defaultAdapter;
     private BluetoothSocket bluetoothSocket;
@@ -787,6 +787,8 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         //dataTransControl
         editTextTargetPosition=(EditText)viewDataTransControl.findViewById(R.id.editTextTargetPosition);
         editTextStep=(EditText)viewDataTransControl.findViewById(R.id.editTextStep);
+        editTextInstruction=(EditText)viewDataTransControl.findViewById(R.id.editTextInstruction);
+        editTextData=(EditText)viewDataTransControl.findViewById(R.id.editTextData);
 
         buttonStartSendPosition=(Button) viewDataTransControl.findViewById(R.id.buttonStartSendPosition);
         buttonStopSendPosition=(Button) viewDataTransControl.findViewById(R.id.buttonStopSendPosition);
@@ -794,6 +796,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         buttonForeward=(Button) viewDataTransControl.findViewById(R.id.buttonForeward);
         buttonClear=(Button) viewDataTransControl.findViewById(R.id.buttonClear);
         buttonReverse=(Button) viewDataTransControl.findViewById(R.id.buttonReverse);
+        buttonEmergencySend=(Button) viewDataTransControl.findViewById(R.id.buttonEmergencySend);
         buttonDataTransControlReturn=(Button) viewDataTransControl.findViewById(R.id.buttonDataTransControlReturn);
 
         buttonStartSendPosition.setOnClickListener(new View.OnClickListener() {
@@ -916,6 +919,33 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
 
 
+        buttonEmergencySend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String instruction=editTextInstruction.getText().toString();
+                String dt=editTextData.getText().toString();
+                if (dt.equals("")) {
+                    dt="0";
+                }
+
+                Pattern pattern = Pattern.compile("[a-zA-Z]+");
+                if(!pattern.matcher(instruction).matches()){//判断是否为字母
+
+                    Toast.makeText(getApplicationContext(),"指令格式错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Message msg = sendHandler.obtainMessage();
+                msg.what=1;
+                Bundle data = new Bundle();
+                data.putString("data","*" +instruction.toUpperCase()+dt+instruction.toUpperCase()+dt+ "#" );
+                msg.setData(data);
+                sendHandler.sendMessage(msg);
+
+            }
+        });
+
         buttonDataTransControlReturn.setOnClickListener(returnOnClickListener);
 
 
@@ -989,6 +1019,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         buttonForeward.setEnabled(true);
         buttonClear.setEnabled(true);
         buttonReverse.setEnabled(true);
+        buttonEmergencySend.setEnabled(true);
 
     }
 
@@ -1017,6 +1048,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         buttonForeward.setEnabled(false);
         buttonClear.setEnabled(false);
         buttonReverse.setEnabled(false);
+        buttonEmergencySend.setEnabled(false);
 
     }
 
