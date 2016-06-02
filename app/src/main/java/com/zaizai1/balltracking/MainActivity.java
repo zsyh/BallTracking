@@ -929,10 +929,17 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     dt="0";
                 }
 
+                Pattern pattern = Pattern.compile("[a-zA-Z]+");
+                if(!pattern.matcher(instruction).matches()){//判断是否为字母
+
+                    Toast.makeText(getApplicationContext(),"指令格式错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Message msg = sendHandler.obtainMessage();
                 msg.what=1;
                 Bundle data = new Bundle();
-                data.putString("data","*" +instruction+dt+instruction+dt+ "#" );
+                data.putString("data","*" +instruction.toUpperCase()+dt+instruction.toUpperCase()+dt+ "#" );
                 msg.setData(data);
                 sendHandler.sendMessage(msg);
 
