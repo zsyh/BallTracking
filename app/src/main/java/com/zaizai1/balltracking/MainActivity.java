@@ -925,7 +925,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private void startSendPositionUI(){
 
         isPositionSending=true;
-        editTextTargetPosition.setEnabled(false);
+        //editTextTargetPosition.setEnabled(false);
         editTextStep.setEnabled(false);
         //buttonSetTargetPosition.setEnabled(false);
         buttonForeward.setEnabled(false);
@@ -941,7 +941,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private void stopSendPositionUI(){
 
         isPositionSending=false;
-        editTextTargetPosition.setEnabled(true);
+        //editTextTargetPosition.setEnabled(true);
         editTextStep.setEnabled(true);
         //buttonSetTargetPosition.setEnabled(true);
         buttonForeward.setEnabled(true);
