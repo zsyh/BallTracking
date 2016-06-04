@@ -1304,7 +1304,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
             }
 
             textViewInformation.setText(strAll);
-            if(queueI>=6)
+            if(queueI>=8)
             {
                 queue.poll();
                 queueI--;
