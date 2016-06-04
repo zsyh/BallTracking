@@ -134,7 +134,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private int touchMode=TOUCH_DONOTHING;
 
     private static final int RECTHALFLENGTH=80;
-    private int leftEdgePosition = 16,rightEdgePosition = 586;
+    private int leftEdgePosition = 10,rightEdgePosition = 586;
 
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -1612,7 +1612,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         else {
             Log.e("HelloOpenCV","自动跟踪错误,m00==0 , mode:" + mode);
 
-            playSound(R.raw.tracklose);
+            //playSound(R.raw.tracklose);
 
         }
 
