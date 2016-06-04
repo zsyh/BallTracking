@@ -962,12 +962,12 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         isPositionSending=true;
         //editTextTargetPosition.setEnabled(false);
-        editTextStep.setEnabled(false);
+        //editTextStep.setEnabled(false);
         //buttonSetTargetPosition.setEnabled(false);
-        buttonForeward.setEnabled(false);
+        //buttonForeward.setEnabled(false);
         //buttonClear.setEnabled(false);
-        buttonReverse.setEnabled(false);
-        buttonSetPID.setEnabled(false);
+        //buttonReverse.setEnabled(false);
+        //buttonSetPID.setEnabled(false);
 
         buttonStartSendPosition.setEnabled(false);
         buttonStopSendPosition.setEnabled(true);
@@ -978,12 +978,12 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
         isPositionSending=false;
         //editTextTargetPosition.setEnabled(true);
-        editTextStep.setEnabled(true);
+        //editTextStep.setEnabled(true);
         //buttonSetTargetPosition.setEnabled(true);
-        buttonForeward.setEnabled(true);
+        //buttonForeward.setEnabled(true);
         //buttonClear.setEnabled(true);
-        buttonReverse.setEnabled(true);
-        buttonSetPID.setEnabled(true);
+        //buttonReverse.setEnabled(true);
+        //buttonSetPID.setEnabled(true);
 
         buttonStartSendPosition.setEnabled(true);
         buttonStopSendPosition.setEnabled(false);
@@ -1246,14 +1246,19 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
                     //str!=null才有效！
                     str=str.trim();
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
-                    String time = sdf.format(new java.util.Date());
+                    if(str.equals("beep")){
+                        playSound(R.raw.reachtarget);
+                    }
+                    else {
 
-                    str=time+" recv:"+str+'\n';
-                    queue.offer(str);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+                        String time = sdf.format(new java.util.Date());
 
-                    runOnUiThread(new UpdateInformationBarRunnable());//更新信息条
+                        str = time + " recv:" + str + '\n';
+                        queue.offer(str);
 
+                        runOnUiThread(new UpdateInformationBarRunnable());//更新信息条
+                    }
 
                 }
 
