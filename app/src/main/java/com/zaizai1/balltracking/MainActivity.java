@@ -135,7 +135,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
     private int touchMode=TOUCH_DONOTHING;
 
     private static final int RECTHALFLENGTH=80;
-    private int leftEdgePosition = 10,rightEdgePosition = 586;
+    private int leftEdgePosition = 11,rightEdgePosition = 586;
 
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
