@@ -86,7 +86,7 @@
         android:layout_height="80dp"
         android:layout_below="@id/buttonReverse"
         android:layout_toRightOf="@id/editTextInstruction"
-        android:text="应急发送" />
+        android:text="指令发送" />
 
 </RelativeLayout>
 
