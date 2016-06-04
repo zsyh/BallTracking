@@ -1501,7 +1501,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
 
                     double correctedPosition;
                     if(checkBoxWideAngleErrorFix.isChecked()){
-                        correctedPosition=576/564*(position-16)+10;
+                        correctedPosition=(double)576/564*(position-16)+10;
                     }
                     else
                     {
