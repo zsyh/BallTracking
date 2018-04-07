@@ -965,7 +965,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         //editTextStep.setEnabled(false);
         //buttonSetTargetPosition.setEnabled(false);
         //buttonForeward.setEnabled(false);
-        //buttonClear.setEnabled(false);
+        buttonClear.setEnabled(false);
         //buttonReverse.setEnabled(false);
         //buttonSetPID.setEnabled(false);
 
@@ -981,7 +981,7 @@ public class MainActivity extends Activity implements CvCameraViewListener2, Vie
         //editTextStep.setEnabled(true);
         //buttonSetTargetPosition.setEnabled(true);
         //buttonForeward.setEnabled(true);
-        //buttonClear.setEnabled(true);
+        buttonClear.setEnabled(true);
         //buttonReverse.setEnabled(true);
         //buttonSetPID.setEnabled(true);
 
